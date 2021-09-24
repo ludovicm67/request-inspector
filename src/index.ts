@@ -53,3 +53,20 @@ server.listen(port, host, (err, address) => {
   }
   console.log(`Server listening at ${address}`);
 });
+
+/**
+ * Exit the application when receiving a particular signal.
+ *
+ * @param signal received signal
+ */
+const handleExit = (signal: NodeJS.BeforeExitListener) => {
+  console.log(`Received ${signal}. Stopping server…`);
+  server.close(() => {
+    process.exit(0);
+  });
+};
+
+// watch some signals to exit the application
+process.on('SIGINT', handleExit);
+process.on('SIGQUIT', handleExit);
+process.on('SIGTERM', handleExit);
