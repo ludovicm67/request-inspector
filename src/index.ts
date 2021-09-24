@@ -16,6 +16,9 @@ server.register(fastifyRateLimit, {
   timeWindow: rateLimitPeriod,
 });
 
+// health check endpoint
+server.get('/healthz', async () => 'OK\n');
+
 server.get('*', (req, res) => {
   const date = new Date();
   const {
