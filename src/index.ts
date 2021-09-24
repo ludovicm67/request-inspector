@@ -1,4 +1,4 @@
-import fastify from 'fastify';
+import fastify, { FastifyReply, FastifyRequest } from 'fastify';
 import fastifyCors from 'fastify-cors';
 import fastifyRateLimit from 'fastify-rate-limit';
 
@@ -16,18 +16,34 @@ server.register(fastifyRateLimit, {
   timeWindow: rateLimitPeriod,
 });
 
+/**
+ * Inspect a Fastify request and print details in the console.
+ *
+ * @param req Fastify request
+ * @param res Fastify reply
+ */
+const inspectRequest = (req: FastifyRequest, res: FastifyReply) => {
+  const date = new Date();
+  const {
+    headers, method, url, body,
+  } = req;
+
+  console.log(`\n\n[${date.toISOString()}]\t${method}\t${url}:`);
+  console.log('Headers:', headers);
+  console.log('Body:', body);
+
+  res.send('OK\n');
+};
+
 // health check endpoint
 server.get('/healthz', async () => 'OK\n');
 
-server.get('*', (req, res) => {
-  const date = new Date();
-  const {
-    headers, method, url,
-  } = req;
-  console.log(`\n\n[${date.toISOString()}]\t${method}\t${url}:`);
-  console.log('Headers:', headers);
-  res.send('OK\n');
-});
+// inspect basic methods
+server.delete('*', inspectRequest);
+server.get('*', inspectRequest);
+server.patch('*', inspectRequest);
+server.post('*', inspectRequest);
+server.put('*', inspectRequest);
 
 // start the server
 server.listen(port, host, (err, address) => {
