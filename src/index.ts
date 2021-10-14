@@ -1,6 +1,7 @@
 import fastify, { FastifyReply, FastifyRequest } from 'fastify';
 import fastifyCors from 'fastify-cors';
 import fastifyRateLimit from 'fastify-rate-limit';
+import fastifyFormBody from 'fastify-formbody';
 
 // get configuration from environment variables
 const port = process.env.SERVER_PORT || 8080;
@@ -11,6 +12,7 @@ const rateLimitPeriod = process.env.RATE_LIMIT_PERIOD || '5 minutes';
 // initialize server and add some rate-limiting
 const server = fastify();
 server.register(fastifyCors);
+server.register(fastifyFormBody);
 server.register(fastifyRateLimit, {
   max: parseInt(`${rateLimitNumber}`, 10),
   timeWindow: rateLimitPeriod,
